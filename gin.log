@@ -1,0 +1,8 @@
+[GIN-debug] GET    /login                    --> go-web/cmd/app/controllers.LoginGet.func1 (5 handlers)
+[GIN-debug] POST   /login                    --> go-web/cmd/app/controllers.LoginPost.func1 (5 handlers)
+[GIN-debug] GET    /                         --> go-web/cmd/app/controllers.IndexGet.func1 (5 handlers)
+[GIN-debug] GET    /dashboard                --> go-web/cmd/app/controllers.DashboardGet.func1 (6 handlers)
+[GIN-debug] GET    /logout                   --> go-web/cmd/app/controllers.LogoutGet.func1 (6 handlers)
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :3000
