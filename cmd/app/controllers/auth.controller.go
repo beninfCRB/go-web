@@ -57,7 +57,7 @@ func LoginPost() gin.HandlerFunc {
 func LogoutGet() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		middleware.ClearSession(c)
-		c.Redirect(http.StatusMovedPermanently, "/")
+		c.Redirect(http.StatusFound, "/")
 	}
 }
 

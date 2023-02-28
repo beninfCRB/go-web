@@ -18,7 +18,7 @@ func SetSession() gin.HandlerFunc {
 	store := cookie.NewStore(Secret)
 	age, _ := strconv.Atoi(os.Getenv("MAX_AGE"))
 	if age > 0 {
-		store.Options(sessions.Options{MaxAge: age, Path: "/", Secure: true, HttpOnly: true})
+		store.Options(sessions.Options{MaxAge: age * 3600, Path: "/", Secure: true, HttpOnly: true})
 	}
 	return sessions.Sessions(os.Getenv("SESSION"), store)
 }
