@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 
@@ -18,7 +19,7 @@ func SetSession() gin.HandlerFunc {
 	store := cookie.NewStore(Secret)
 	age, _ := strconv.Atoi(os.Getenv("MAX_AGE"))
 	if age > 0 {
-		store.Options(sessions.Options{MaxAge: age * 3600, Path: "/", Secure: true, HttpOnly: true})
+		store.Options(sessions.Options{MaxAge: age * 3600, Path: "/", Secure: true, HttpOnly: true, SameSite: http.SameSiteStrictMode})
 	}
 	return sessions.Sessions(os.Getenv("SESSION"), store)
 }
