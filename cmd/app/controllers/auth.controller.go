@@ -1,19 +1,16 @@
 package controllers
 
 import (
-	"go-web/cmd/app/global"
+	"go-web/common/middleware"
 	"go-web/common/utils"
-	"log"
 	"net/http"
 
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
 func LoginGet() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get(global.Userkey)
+		user := middleware.GetSession(c)
 		if user != nil {
 			c.Redirect(http.StatusMovedPermanently, "/dashboard")
 			// return
@@ -28,8 +25,7 @@ func LoginGet() gin.HandlerFunc {
 
 func LoginPost() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get(global.Userkey)
+		user := middleware.GetSession(c)
 		if user != nil {
 			c.HTML(http.StatusBadRequest, "login.html", gin.H{"content": "Please logout first"})
 			return
@@ -48,8 +44,8 @@ func LoginPost() gin.HandlerFunc {
 			return
 		}
 
-		session.Set(global.Userkey, username)
-		if err := session.Save(); err != nil {
+		session := middleware.SaveSession(c, username)
+		if session != nil {
 			c.HTML(http.StatusInternalServerError, "login.html", gin.H{"content": "Failed to save session"})
 			return
 		}
@@ -60,29 +56,14 @@ func LoginPost() gin.HandlerFunc {
 
 func LogoutGet() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get(global.Userkey)
-		log.Println("logging out user:", user)
-		if user == nil {
-			log.Println("Invalid session token")
-			return
-		}
-
-		session.Delete(global.Userkey)
-		session.Options(sessions.Options{MaxAge: -1})
-		if err := session.Save(); err != nil {
-			log.Println("Failed to save session:", err)
-			return
-		}
-
+		middleware.ClearSession(c)
 		c.Redirect(http.StatusMovedPermanently, "/")
 	}
 }
 
 func IndexGet() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get(global.Userkey)
+		user := middleware.GetSession(c)
 		c.HTML(http.StatusOK, "index.html", gin.H{
 			"title":   "Halaman Index",
 			"content": "Anda harus melakukan login akun terlebih dahulu ..",
@@ -93,8 +74,7 @@ func IndexGet() gin.HandlerFunc {
 
 func DashboardGet() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get(global.Userkey)
+		user := middleware.GetSession(c)
 		c.HTML(http.StatusOK, "dashboard.html", gin.H{
 			"title":   "Halaman Dashboard",
 			"content": "This is a dashboard",

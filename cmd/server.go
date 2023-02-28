@@ -7,7 +7,6 @@ import (
 	"go-web/common/middleware"
 	"go-web/common/utils"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/gin-contrib/static"
@@ -23,19 +22,14 @@ func main() {
 	}
 
 	database.ConnectDB()
+	r.Use(middleware.SetSession())
 	r.Use(static.Serve("/", static.LocalFile("assets", false)))
 	r.LoadHTMLGlob("cmd/app/views/**/*")
 
 	r.Use(gin.Recovery(), utils.CustomLogger())
-	utils.Session(r)
 	utils.LogFile()
 
-	r.NoRoute(func(c *gin.Context) {
-		c.HTML(http.StatusNotFound, "notFound.html", gin.H{
-			"title": "Page Not Found",
-		})
-	})
-
+	middleware.NotFound(r)
 	public := r.Group("/")
 	routes.PublicRoutes(public)
 
