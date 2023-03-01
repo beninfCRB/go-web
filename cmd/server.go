@@ -15,20 +15,34 @@ import (
 )
 
 func main() {
+	//gin new router
 	r := gin.New()
+
+	//load env file
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalln("\nerror Loading .env File")
 	}
 
+	//load funchandler database
 	database.ConnectDB()
+
+	//load session
 	r.Use(middleware.SetSession())
+
+	//load static file
 	r.Use(static.Serve("/", static.LocalFile("assets", false)))
+
+	//load html file
 	r.LoadHTMLGlob("cmd/app/views/**/*")
 
+	//load recovery & logger
 	r.Use(gin.Recovery(), utils.CustomLogger())
+
+	//create file logger
 	utils.LogFile()
 
+	//route region
 	middleware.NotFound(r)
 	public := r.Group("/")
 	routes.PublicRoutes(public)
@@ -37,6 +51,7 @@ func main() {
 	private.Use(middleware.AuthRequired)
 	routes.PrivateRoutes(private)
 
+	//listen server
 	port := os.Getenv("PORT")
 	if port == "" {
 		fmt.Println("\nport not setup in file .env")
