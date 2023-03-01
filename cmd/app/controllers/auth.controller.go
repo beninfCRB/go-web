@@ -13,7 +13,7 @@ func LoginGet() gin.HandlerFunc {
 		user := middleware.GetSession(c)
 		if user != nil {
 			c.Redirect(http.StatusMovedPermanently, "/dashboard")
-			// return
+			return
 		}
 		c.HTML(http.StatusOK, "login.html", gin.H{
 			"title":   "Halaman Login",

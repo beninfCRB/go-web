@@ -18,11 +18,8 @@ func init() {
 }
 
 func main() {
-	//load funchandler database
-	db, _ := database.ConnectDB()
-
 	//run migration
-	var mg = db.AutoMigrate(&models.User{})
+	var mg = database.DB.AutoMigrate(&models.User{})
 
 	//check migration
 	if mg != nil {

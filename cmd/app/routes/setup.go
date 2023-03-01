@@ -17,5 +17,5 @@ func PrivateRoutes(g *gin.RouterGroup) {
 	g.Use(middleware.AuthRequired)
 	g.GET("/dashboard", controllers.DashboardGet())
 	g.GET("/logout", controllers.LogoutGet())
-
+	UserRoute(g)
 }
